@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 반 1인 1역</title>
+<style>
+:root{
+  --bg:#f5f2ea;
+  --paper:#fffdf8;
+  --navy:#26384a;
+  --text:#34434d;
+  --sub:#7b898f;
+  --mint:#82cbb7;
+  --mint-dark:#58b89f;
+  --mint-soft:#e7f7f1;
+  --coral:#f08f7d;
+  --coral-dark:#df705f;
+  --coral-soft:#fff0ec;
+  --yellow:#f2d477;
+  --yellow-soft:#fff8d9;
+  --blue:#89b9ee;
+  --line:#dde6e2;
+  --shadow:0 14px 35px rgba(43,65,73,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh;
+  font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 0%, #dff3eb 0 13%, transparent 14%),
+    radial-gradient(circle at 90% 5%, #ffe3dd 0 13%, transparent 14%),
+    linear-gradient(135deg,#f7f7f0,#fff8f5);
+}
+button,textarea,input{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default}
+
+.app{
+  width:min(1800px,calc(100% - 36px));
+  margin:0 auto; padding:24px 0 50px;
+}
+.topbar{
+  display:flex; justify-content:space-between; align-items:center; gap:20px;
+  margin-bottom:22px;
+}
+.brand{display:flex; align-items:center; gap:14px}
+.logo{
+  width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+  font-size:32px;background:white;box-shadow:var(--shadow)
+}
+.title-wrap h1{margin:0;font-size:clamp(29px,3vw,48px);letter-spacing:-1.5px}
+.title-wrap p{margin:5px 0 0;color:var(--sub);font-weight:700}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.small-btn{
+  border:0;border-radius:13px;background:white;padding:11px 14px;color:var(--text);
+  font-weight:800;box-shadow:0 5px 14px rgba(50,70,76,.08);transition:.18s
+}
+.small-btn:hover{transform:translateY(-1px)}
+.random-btn{
+  background:linear-gradient(135deg,var(--mint),var(--mint-dark));
+  color:white; box-shadow:0 7px 16px rgba(88,184,159,.25)
+}
+.random-btn:hover{box-shadow:0 11px 22px rgba(88,184,159,.32)}
+
+.progress-card{
+  background:rgba(255,255,255,.92);border-radius:22px;padding:18px 20px;
+  box-shadow:var(--shadow);margin-bottom:20px
+}
+.progress-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:10px}
+.progress-text{font-size:18px;font-weight:900}
+.progress-number{font-size:20px;font-weight:950;color:var(--coral)}
+.progress-track{height:14px;background:#edf1ef;border-radius:999px;overflow:hidden}
+.progress-fill{
+  height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--mint),var(--coral));transition:.35s
+}
+
+.guide{
+  display:flex;align-items:center;justify-content:center;gap:12px;min-height:86px;
+  padding:14px 20px;margin-bottom:20px;border-radius:22px;text-align:center;
+  background:var(--navy);color:white;box-shadow:var(--shadow)
+}
+.guide-icon{font-size:32px}
+.guide-main{font-size:22px;font-weight:950}
+.guide-sub{margin-top:3px;font-size:14px;font-weight:700;color:#d9e1e6}
+
+.student-section{margin-bottom:25px}
+.section-title{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:11px
+}
+.section-title h2{margin:0;font-size:24px}
+.section-caption{color:var(--sub);font-size:14px;font-weight:700}
+.student-list{
+  display:flex;flex-wrap:wrap;gap:10px;padding:17px;background:rgba(255,255,255,.75);
+  border-radius:22px;border:2px solid white
+}
+.student-chip{
+  border:2px solid var(--line);border-radius:999px;padding:11px 17px;background:white;
+  color:var(--text);font-size:17px;font-weight:900;transition:.18s
+}
+.student-chip:hover:not(:disabled){border-color:var(--mint);transform:translateY(-2px)}
+.student-chip.selected{color:white;background:var(--navy);border-color:var(--navy);transform:scale(1.05)}
+.student-chip.assigned{background:#edf1ef;color:#9ba5a8;text-decoration:line-through}
+
+.role-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px
+}
+.role-card{
+  position:relative;border:3px solid transparent;border-radius:22px;min-height:180px;padding:20px;
+  background:var(--paper);box-shadow:0 7px 20px rgba(45,68,76,.08);
+  transition:transform .18s,box-shadow .18s,border .18s;text-align:left
+}
+.role-card:hover:not(.taken){transform:translateY(-5px);box-shadow:0 14px 27px rgba(45,68,76,.14);border-color:var(--mint)}
+.role-card:nth-child(4n+2){background:#fff8f5}
+.role-card:nth-child(4n+3){background:#f6fbf9}
+.role-card:nth-child(4n+4){background:#fffdf2}
+.role-icon{font-size:37px;margin-bottom:12px}
+.role-name{font-size:22px;font-weight:950;line-height:1.2;letter-spacing:-.5px}
+.role-desc{margin-top:7px;font-size:14px;font-weight:700;line-height:1.5;color:var(--sub)}
+.role-state{
+  margin-top:15px;display:inline-block;padding:6px 10px;border-radius:999px;
+  background:var(--mint-soft);color:#458c78;font-size:13px;font-weight:900
+}
+.role-card.taken{
+  background:#f1f2f1;border-color:#e2e5e4;color:#8b9598;cursor:default;box-shadow:none
+}
+.role-card.taken .role-desc{color:#a3abad}
+.role-card.taken .role-state{color:white;background:var(--coral)}
+.owner{
+  position:absolute;top:15px;right:15px;padding:7px 10px;border-radius:999px;background:white;
+  color:var(--navy);font-size:14px;font-weight:950;box-shadow:0 3px 10px rgba(30,50,60,.08)
+}
+.role-card.slot{
+  animation:slotPulse .12s linear infinite;
+  border-color:var(--yellow);
+}
+@keyframes slotPulse{
+  0%{transform:translateY(-2px) rotate(-.3deg)}
+  50%{transform:translateY(2px) rotate(.3deg)}
+  100%{transform:translateY(-2px) rotate(-.3deg)}
+}
+
+.complete-banner{
+  display:none;margin-top:24px;padding:22px;border-radius:22px;
+  background:linear-gradient(135deg,var(--mint-soft),var(--coral-soft));
+  text-align:center;box-shadow:var(--shadow)
+}
+.complete-banner.show{display:block;animation:pop .45s ease}
+.complete-banner strong{display:block;font-size:27px;margin-bottom:5px}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+.modal-backdrop{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;
+  background:rgba(24,38,44,.52);backdrop-filter:blur(5px);z-index:1000
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  width:min(470px,100%);border-radius:28px;padding:27px;background:white;
+  box-shadow:0 25px 70px rgba(20,35,42,.3);text-align:center;animation:modalIn .22s ease
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.modal-icon{font-size:46px}
+.modal h3{margin:10px 0 6px;font-size:27px}
+.confirm-role{
+  margin:18px 0;padding:17px;border-radius:18px;background:var(--mint-soft);
+  font-size:22px;font-weight:950
+}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-btn{border:0;border-radius:14px;padding:14px;font-weight:950}
+.cancel-btn{background:#edf1ef;color:var(--text)}
+.confirm-btn{background:var(--coral);color:white}
+
+.countdown{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(38,56,74,.78);backdrop-filter:blur(7px);z-index:1800;color:white
+}
+.countdown.show{display:flex}
+.countdown-box{text-align:center}
+.countdown-label{font-size:24px;font-weight:900;margin-bottom:16px}
+.countdown-number{
+  font-size:clamp(90px,18vw,230px);font-weight:1000;line-height:1;
+  text-shadow:0 15px 40px rgba(0,0,0,.25);animation:countPop .8s ease
+}
+.countdown-sub{font-size:18px;font-weight:800;margin-top:16px;color:#e2ecef}
+@keyframes countPop{
+  0%{transform:scale(.55);opacity:0}
+  35%{transform:scale(1.13);opacity:1}
+  100%{transform:scale(1);opacity:1}
+}
+
+.settings-backdrop{
+  position:fixed;inset:0;display:none;justify-content:flex-end;background:rgba(24,38,44,.35);z-index:1500
+}
+.settings-backdrop.show{display:flex}
+.settings{
+  width:min(580px,100%);height:100%;overflow:auto;padding:27px;background:#fffdf9;
+  box-shadow:-10px 0 35px rgba(30,50,60,.18)
+}
+.settings-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.settings-head h2{margin:0;font-size:28px}
+.close-btn{border:0;width:40px;height:40px;border-radius:50%;background:#ecefed;font-size:20px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;margin-bottom:7px;font-weight:950}
+.form-group input,.form-group textarea{
+  width:100%;border:2px solid var(--line);border-radius:14px;padding:13px;background:white;outline:none;font-size:16px
+}
+.form-group textarea{min-height:190px;resize:vertical;line-height:1.55}
+.help{margin-top:6px;font-size:13px;line-height:1.5;color:var(--sub)}
+.save-btn{
+  width:100%;border:0;border-radius:16px;padding:16px;color:white;background:var(--navy);
+  font-size:17px;font-weight:950
+}
+.danger-zone{margin-top:27px;padding-top:20px;border-top:2px dashed var(--line)}
+.danger-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.undo-btn,.reset-btn{border:0;border-radius:13px;padding:13px;font-weight:900}
+.undo-btn{background:var(--yellow-soft);color:#806618}
+.reset-btn{background:var(--coral-soft);color:#ae5648}
+
+#confetti{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:2000}
+.confetti-piece{
+  position:absolute;top:-20px;width:11px;height:17px;
+  animation:fall var(--time) ease-in var(--delay) forwards
+}
+@keyframes fall{
+  to{transform:translate(var(--x),110vh) rotate(var(--r));opacity:.3}
+}
+
+@media(min-width:1500px){
+  .role-grid{grid-template-columns:repeat(5,1fr)}
+  .role-card{min-height:205px}
+  .role-name{font-size:25px}
+}
+@media(max-width:750px){
+  .topbar{align-items:flex-start;flex-direction:column}
+  .role-grid{grid-template-columns:1fr 1fr}
+  .role-card{min-height:170px}
+  .title-wrap h1{font-size:30px}
+  .section-title{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:500px){.role-grid{grid-template-columns:1fr}}
+
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  body{background:white}
+  .top-actions,.student-section,.guide,.settings-backdrop,.progress-card,.countdown{display:none!important}
+  .app{width:100%;padding:0}
+  .topbar{margin-bottom:15px}
+  .role-grid{grid-template-columns:repeat(5,1fr);gap:7mm}
+  .role-card{min-height:38mm;box-shadow:none;break-inside:avoid;border:1px solid #bbb}
+}
+</style>
+</head>
+<body>
+
+<div id="confetti"></div>
+
+<div class="countdown" id="countdown">
+  <div class="countdown-box">
+    <div class="countdown-label">🎲 남은 역할을 랜덤 배정합니다!</div>
+    <div class="countdown-number" id="countdownNumber">3</div>
+    <div class="countdown-sub" id="countdownSub">두구두구…</div>
+  </div>
+</div>
+
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🌱</div>
+      <div class="title-wrap">
+        <h1 id="classTitle">우리 반 1인 1역</h1>
+        <p>내 역할은 내가 선택하고, 필요할 땐 공정하게 랜덤으로!</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="small-btn random-btn" id="randomButton" onclick="startRandomAssignment()">
+        🎲 남은 역할 랜덤 배정
+      </button>
+      <button class="small-btn" onclick="toggleFullscreen()">⛶ TV 화면</button>
+      <button class="small-btn" onclick="window.print()">🖨️ 출력</button>
+      <button class="small-btn" onclick="openSettings()">⚙️ 교사 설정</button>
+    </div>
+  </header>
+
+  <section class="progress-card">
+    <div class="progress-header">
+      <div class="progress-text">우리 반 역할 선택 현황</div>
+      <div class="progress-number" id="progressNumber">0 / 10</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </section>
+
+  <section class="guide">
+    <div class="guide-icon" id="guideIcon">👆</div>
+    <div>
+      <div class="guide-main" id="guideMain">먼저 내 이름을 선택하세요.</div>
+      <div class="guide-sub" id="guideSub">이름을 선택한 뒤 원하는 역할 카드를 눌러 주세요.</div>
+    </div>
+  </section>
+
+  <section class="student-section">
+    <div class="section-title">
+      <h2>👧👦 내 이름 선택</h2>
+      <div class="section-caption">이미 역할을 선택한 학생은 회색으로 표시됩니다.</div>
+    </div>
+    <div class="student-list" id="studentList"></div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>🧩 우리 반 역할</h2>
+      <div class="section-caption" id="roleCaption">이름을 먼저 선택하세요.</div>
+    </div>
+    <div class="role-grid" id="roleGrid"></div>
+  </section>
+
+  <section class="complete-banner" id="completeBanner">
+    <strong>🎉 우리 반 역할 선택 완료!</strong>
+    각자의 역할을 책임감 있게 실천해 봅시다.
+  </section>
+</main>
+
+<div class="modal-backdrop" id="confirmModal">
+  <div class="modal">
+    <div class="modal-icon">🤝</div>
+    <h3 id="confirmStudent">김민준</h3>
+    <div>이 역할을 맡을까요?</div>
+    <div class="confirm-role" id="confirmRole">칠판 매니저</div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel-btn" onclick="closeConfirm()">다시 고르기</button>
+      <button class="modal-btn confirm-btn" onclick="confirmAssignment()">이 역할 선택하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="settings-backdrop" id="settingsBackdrop">
+  <aside class="settings">
+    <div class="settings-head">
+      <h2>⚙️ 교사 설정</h2>
+      <button class="close-btn" onclick="closeSettings()">×</button>
+    </div>
+
+    <div class="form-group">
+      <label>학급 제목</label>
+      <input type="text" id="settingTitle">
+    </div>
+
+    <div class="form-group">
+      <label>학생 명단</label>
+      <textarea id="settingStudents"></textarea>
+      <div class="help">한 줄에 한 명씩 입력합니다.</div>
+    </div>
+
+    <div class="form-group">
+      <label>역할 목록</label>
+      <textarea id="settingRoles"></textarea>
+      <div class="help">
+        한 줄에 하나씩 <b>이모지 | 역할 이름 | 설명</b> 형식으로 입력합니다.<br>
+        예) 🧹 | 바닥 지킴이 | 주변에 떨어진 쓰레기를 확인해요.
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveSettings()">설정 저장</button>
+
+    <div class="danger-zone">
+      <div class="form-group"><label>역할 배정 관리</label></div>
+      <div class="danger-actions">
+        <button class="undo-btn" onclick="undoLast()">↩ 마지막 선택 취소</button>
+        <button class="reset-btn" onclick="resetAssignments()">🗑 전체 역할 초기화</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+const DEFAULT_DATA = {
+  title: "6학년 2반 · 우리 반 1인 1역",
+  students: [
+    "김민준","이서윤","박지호","최하은","정도윤",
+    "한지민","윤서준","오지우","강민서","조예준"
+  ],
+  roles: [
+    {icon:"🧹",name:"교실 환경 지킴이",desc:"교실 바닥과 주변을 살펴보고 깨끗하게 유지해요."},
+    {icon:"🖍️",name:"칠판 매니저",desc:"칠판을 깨끗하게 지우고 도구를 정리해요."},
+    {icon:"🌬️",name:"환기 매니저",desc:"쉬는 시간에 창문을 열고 닫아 공기를 바꿔요."},
+    {icon:"📚",name:"책장 사서",desc:"학급 책장을 가지런히 정리해요."},
+    {icon:"💻",name:"디지털 도우미",desc:"컴퓨터와 전자기기 상태를 확인해요."},
+    {icon:"♻️",name:"분리수거 지킴이",desc:"쓰레기가 알맞게 분리되었는지 살펴봐요."},
+    {icon:"🌱",name:"식물 돌봄이",desc:"학급 식물의 상태를 살피고 물을 줘요."},
+    {icon:"📦",name:"자료 배부 도우미",desc:"학습지와 준비물을 나누고 정리해요."},
+    {icon:"🪑",name:"정리 점검단",desc:"책상과 의자가 가지런한지 확인해요."},
+    {icon:"📢",name:"알림 도우미",desc:"우리 반의 중요한 전달 사항을 도와줘요."}
+  ],
+  assignments: {},
+  history: []
+};
+
+function cloneDefault(){
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+let saved = null;
+try{
+  saved = JSON.parse(localStorage.getItem("classRoleApp"));
+}catch(e){}
+
+let state = saved || cloneDefault();
+if(!state.assignments) state.assignments = {};
+if(!state.history) state.history = [];
+
+let selectedStudent = null;
+let pendingRoleIndex = null;
+let isRandomRunning = false;
+let slotPreviewAssignments = null;
+
+function saveState(){
+  localStorage.setItem("classRoleApp",JSON.stringify(state));
+}
+
+function render(){
+  document.getElementById("classTitle").textContent = state.title;
+  renderStudents();
+  renderRoles();
+  renderProgress();
+  renderGuide();
+  updateRandomButton();
+}
+
+function renderStudents(){
+  const container = document.getElementById("studentList");
+  container.innerHTML = "";
+
+  state.students.forEach(student=>{
+    const button = document.createElement("button");
+    button.className = "student-chip";
+    button.textContent = student;
+
+    if(state.assignments[student] !== undefined){
+      button.classList.add("assigned");
+      button.disabled = true;
+    }
+
+    if(selectedStudent === student){
+      button.classList.add("selected");
+    }
+
+    button.onclick = ()=>{
+      if(isRandomRunning) return;
+      selectedStudent = selectedStudent === student ? null : student;
+      render();
+    };
+
+    container.appendChild(button);
+  });
+}
+
+function renderRoles(){
+  const container = document.getElementById("roleGrid");
+  container.innerHTML = "";
+
+  const previewMap = slotPreviewAssignments || {};
+
+  state.roles.forEach((role,index)=>{
+    let owner = getRoleOwner(index);
+
+    if(!owner){
+      for(const [student, roleIndex] of Object.entries(previewMap)){
+        if(roleIndex === index){
+          owner = student;
+          break;
+        }
+      }
+    }
+
+    const card = document.createElement("button");
+    card.className = "role-card";
+
+    const isRealTaken = !!getRoleOwner(index);
+    const isPreview = !isRealTaken && owner;
+
+    if(owner) card.classList.add("taken");
+    if(isPreview) card.classList.add("slot");
+
+    card.innerHTML = `
+      ${owner ? `<div class="owner">👤 ${escapeHtml(owner)}</div>` : ""}
+      <div class="role-icon">${escapeHtml(role.icon)}</div>
+      <div class="role-name">${escapeHtml(role.name)}</div>
+      <div class="role-desc">${escapeHtml(role.desc)}</div>
+      <div class="role-state">${owner ? (isPreview ? "섞는 중…" : "선택 완료") : "선택 가능"}</div>
+    `;
+
+    if(!owner && !isRandomRunning){
+      card.onclick = ()=>{
+        if(!selectedStudent){
+          flashGuide();
+          return;
+        }
+        openConfirm(index);
+      };
+    }
+
+    container.appendChild(card);
+  });
+
+  const available = state.roles.length - Object.keys(state.assignments).length;
+  document.getElementById("roleCaption").textContent =
+    isRandomRunning ? "🎰 남은 역할을 섞고 있습니다…" : `현재 ${available}개의 역할을 선택할 수 있습니다.`;
+}
+
+function renderProgress(){
+  const assigned = Object.keys(state.assignments).length;
+  const total = state.students.length;
+
+  document.getElementById("progressNumber").textContent = `${assigned} / ${total}`;
+
+  const percent = total === 0 ? 0 : assigned / total * 100;
+  document.getElementById("progressFill").style.width = `${percent}%`;
+
+  const banner = document.getElementById("completeBanner");
+  if(assigned === total && total > 0){
+    banner.classList.add("show");
+  }else{
+    banner.classList.remove("show");
+  }
+}
+
+function renderGuide(){
+  const main = document.getElementById("guideMain");
+  const sub = document.getElementById("guideSub");
+  const icon = document.getElementById("guideIcon");
+
+  if(isRandomRunning){
+    icon.textContent = "🎰";
+    main.textContent = "남은 역할을 랜덤으로 배정하고 있어요!";
+    sub.textContent = "이미 직접 선택한 역할은 그대로 유지됩니다.";
+    return;
+  }
+
+  if(selectedStudent){
+    icon.textContent = "🎯";
+    main.textContent = `${selectedStudent}, 맡고 싶은 역할을 선택하세요.`;
+    sub.textContent = "아직 다른 친구가 선택하지 않은 역할만 고를 수 있어요.";
+  }else{
+    icon.textContent = "👆";
+    main.textContent = "먼저 내 이름을 선택하세요.";
+    sub.textContent = "직접 고르거나, 교사가 남은 역할을 랜덤 배정할 수 있어요.";
+  }
+}
+
+function getRoleOwner(roleIndex){
+  for(const [student,index] of Object.entries(state.assignments)){
+    if(index === roleIndex) return student;
+  }
+  return null;
+}
+
+function openConfirm(index){
+  pendingRoleIndex = index;
+  const role = state.roles[index];
+  document.getElementById("confirmStudent").textContent = selectedStudent;
+  document.getElementById("confirmRole").textContent = `${role.icon} ${role.name}`;
+  document.getElementById("confirmModal").classList.add("show");
+}
+
+function closeConfirm(){
+  document.getElementById("confirmModal").classList.remove("show");
+  pendingRoleIndex = null;
+}
+
+function confirmAssignment(){
+  if(!selectedStudent || pendingRoleIndex === null) return;
+
+  if(getRoleOwner(pendingRoleIndex)){
+    alert("방금 다른 친구가 선택한 역할입니다.");
+    closeConfirm();
+    render();
+    return;
+  }
+
+  const student = selectedStudent;
+  state.assignments[student] = pendingRoleIndex;
+
+  state.history.push({
+    type:"single",
+    student,
+    roleIndex:pendingRoleIndex
+  });
+
+  selectedStudent = null;
+  saveState();
+  closeConfirm();
+  render();
+
+  if(Object.keys(state.assignments).length === state.students.length){
+    launchConfetti();
+  }
+}
+
+function shuffleArray(array){
+  const result = [...array];
+  for(let i=result.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [result[i],result[j]] = [result[j],result[i]];
+  }
+  return result;
+}
+
+function getRemainingData(){
+  const remainingStudents = state.students.filter(
+    student => state.assignments[student] === undefined
+  );
+
+  const usedRoleIndexes = Object.values(state.assignments);
+
+  const remainingRoleIndexes = state.roles
+    .map((role,index)=>index)
+    .filter(index=>!usedRoleIndexes.includes(index));
+
+  return {remainingStudents,remainingRoleIndexes};
+}
+
+function updateRandomButton(){
+  const button = document.getElementById("randomButton");
+  const {remainingStudents} = getRemainingData();
+
+  if(remainingStudents.length === 0){
+    button.disabled = true;
+    button.textContent = "✅ 역할 배정 완료";
+    button.style.opacity = ".65";
+  }else{
+    button.disabled = isRandomRunning;
+    button.textContent = `🎲 남은 ${remainingStudents.length}명 랜덤 배정`;
+    button.style.opacity = "1";
+  }
+}
+
+async function startRandomAssignment(){
+  if(isRandomRunning) return;
+
+  const {remainingStudents,remainingRoleIndexes} = getRemainingData();
+
+  if(remainingStudents.length === 0){
+    alert("모든 학생의 역할이 이미 정해졌습니다. 🎉");
+    return;
+  }
+
+  if(remainingRoleIndexes.length < remainingStudents.length){
+    alert("남아 있는 역할 수가 학생 수보다 적습니다.\n교사 설정에서 역할을 더 추가해 주세요.");
+    return;
+  }
+
+  const ok = confirm(
+    `아직 역할이 없는 ${remainingStudents.length}명의 학생을\n남은 역할에 랜덤 배정할까요?\n\n이미 직접 선택한 역할은 그대로 유지됩니다.`
+  );
+  if(!ok) return;
+
+  isRandomRunning = true;
+  selectedStudent = null;
+  render();
+
+  await runCountdown();
+
+  await runSlotAnimation(remainingStudents, remainingRoleIndexes);
+
+  const shuffledRoles = shuffleArray(remainingRoleIndexes);
+  const batch = [];
+
+  remainingStudents.forEach((student,index)=>{
+    const roleIndex = shuffledRoles[index];
+    state.assignments[student] = roleIndex;
+    batch.push({student,roleIndex});
+  });
+
+  state.history.push({
+    type:"randomBatch",
+    assignments:batch
+  });
+
+  slotPreviewAssignments = null;
+  isRandomRunning = false;
+
+  saveState();
+  render();
+  launchConfetti();
+}
+
+function runCountdown(){
+  return new Promise(resolve=>{
+    const overlay = document.getElementById("countdown");
+    const number = document.getElementById("countdownNumber");
+    const sub = document.getElementById("countdownSub");
+
+    overlay.classList.add("show");
+
+    let current = 3;
+    number.textContent = current;
+    sub.textContent = "두구두구…";
+
+    const tick = ()=>{
+      if(current > 1){
+        current--;
+        number.textContent = current;
+        number.style.animation = "none";
+        void number.offsetWidth;
+        number.style.animation = "countPop .8s ease";
+        setTimeout(tick,850);
+      }else{
+        setTimeout(()=>{
+          number.textContent = "GO!";
+          sub.textContent = "역할을 섞습니다!";
+          number.style.animation = "none";
+          void number.offsetWidth;
+          number.style.animation = "countPop .8s ease";
+          setTimeout(()=>{
+            overlay.classList.remove("show");
+            resolve();
+          },650);
+        },850);
+      }
+    };
+
+    setTimeout(tick,850);
+  });
+}
+
+function runSlotAnimation(remainingStudents,remainingRoleIndexes){
+  return new Promise(resolve=>{
+    const started = Date.now();
+
+    const timer = setInterval(()=>{
+      const shuffled = shuffleArray(remainingRoleIndexes);
+      const preview = {};
+
+      remainingStudents.forEach((student,index)=>{
+        preview[student] = shuffled[index];
+      });
+
+      slotPreviewAssignments = preview;
+      renderRoles();
+
+      if(Date.now() - started >= 2000){
+        clearInterval(timer);
+        slotPreviewAssignments = null;
+        renderRoles();
+        resolve();
+      }
+    },100);
+  });
+}
+
+function undoLast(){
+  if(isRandomRunning) return;
+
+  const last = state.history.pop();
+
+  if(!last){
+    alert("취소할 선택이 없습니다.");
+    return;
+  }
+
+  if(last.type === "randomBatch"){
+    (last.assignments || []).forEach(item=>{
+      delete state.assignments[item.student];
+    });
+  }else{
+    delete state.assignments[last.student];
+  }
+
+  saveState();
+  render();
+}
+
+function resetAssignments(){
+  if(isRandomRunning) return;
+
+  const ok = confirm("현재 역할 배정을 모두 초기화할까요?");
+  if(!ok) return;
+
+  state.assignments = {};
+  state.history = [];
+  selectedStudent = null;
+
+  saveState();
+  render();
+}
+
+function openSettings(){
+  if(isRandomRunning) return;
+
+  document.getElementById("settingTitle").value = state.title;
+  document.getElementById("settingStudents").value = state.students.join("\n");
+  document.getElementById("settingRoles").value = state.roles
+    .map(role=>`${role.icon} | ${role.name} | ${role.desc}`)
+    .join("\n");
+
+  document.getElementById("settingsBackdrop").classList.add("show");
+}
+
+function closeSettings(){
+  document.getElementById("settingsBackdrop").classList.remove("show");
+}
+
+function saveSettings(){
+  const title = document.getElementById("settingTitle").value.trim();
+
+  const students = document.getElementById("settingStudents").value
+    .split("\n").map(v=>v.trim()).filter(Boolean);
+
+  const roleLines = document.getElementById("settingRoles").value
+    .split("\n").map(v=>v.trim()).filter(Boolean);
+
+  const roles = roleLines.map(line=>{
+    const parts = line.split("|").map(v=>v.trim());
+    return {
+      icon:parts[0] || "⭐",
+      name:parts[1] || "우리 반 역할",
+      desc:parts[2] || "우리 반을 위해 함께 실천해요."
+    };
+  });
+
+  if(students.length === 0){
+    alert("학생 이름을 한 명 이상 입력하세요.");
+    return;
+  }
+
+  if(roles.length < students.length){
+    alert("학생 수보다 역할 수가 적습니다.\n학생마다 하나씩 선택할 수 있도록 역할을 더 추가하세요.");
+    return;
+  }
+
+  if(new Set(students).size !== students.length){
+    alert("같은 학생 이름이 두 번 이상 있습니다.");
+    return;
+  }
+
+  state.title = title || "우리 반 1인 1역";
+  state.students = students;
+  state.roles = roles;
+
+  // 명단/역할 구조가 바뀌면 기존 배정은 안전하게 초기화
+  state.assignments = {};
+  state.history = [];
+  selectedStudent = null;
+
+  saveState();
+  closeSettings();
+  render();
+}
+
+async function toggleFullscreen(){
+  try{
+    if(!document.fullscreenElement){
+      await document.documentElement.requestFullscreen();
+    }else{
+      await document.exitFullscreen();
+    }
+  }catch(e){
+    alert("이 브라우저에서는 전체 화면 기능을 사용할 수 없습니다.");
+  }
+}
+
+function flashGuide(){
+  const guide = document.querySelector(".guide");
+  guide.animate(
+    [
+      {transform:"scale(1)"},
+      {transform:"scale(1.025)"},
+      {transform:"scale(1)"}
+    ],
+    {duration:300}
+  );
+}
+
+function launchConfetti(){
+  const layer = document.getElementById("confetti");
+  layer.innerHTML = "";
+
+  const colors = ["#82cbb7","#f08f7d","#f2d477","#89b9ee","#c9a5ef"];
+
+  for(let i=0;i<140;i++){
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random()*100}vw`;
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.setProperty("--x",`${Math.random()*280-140}px`);
+    piece.style.setProperty("--r",`${Math.random()*1000}deg`);
+    piece.style.setProperty("--time",`${2.2+Math.random()*1.8}s`);
+    piece.style.setProperty("--delay",`${Math.random()*.5}s`);
+    layer.appendChild(piece);
+  }
+
+  setTimeout(()=>{layer.innerHTML=""},4500);
+}
+
+function escapeHtml(text){
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+render();
+</script>
+</body>
+</html>
